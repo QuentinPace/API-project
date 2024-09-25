@@ -263,8 +263,20 @@ router.get('/', validateQuery, async(req, res) => {
     try {
 
         //getting page and size
-        const page = req.query.page ? req.query.page : 1
-        const size = (req.query.size && req.query.size <= 20 ) ? req.query.size : 20
+
+        let { page, size } = req.query
+
+
+        page = parseInt(page);
+        size = parseInt(size);
+
+        if (Number.isNaN(page) || page <= 0) page = 1;
+        if (Number.isNaN(size) || size <= 0) size = 20;
+        
+
+        // const page = req.query.page ? req.query.page : 1
+        // const size = (req.query.size && req.query.size <= 20 ) ? req.query.size : 20
+
         console.log(`\npage:${page}\nsize:${size}\n`)
 
         const query = {
@@ -286,9 +298,9 @@ router.get('/', validateQuery, async(req, res) => {
                     required :false
                 }
             ],
+            group: ['Spot.id'],
             limit: size,
-            offset: size * (page - 1),
-            group: ['Spot.id'],  // Group by SpotId
+            offset: size * (page - 1)  // Group by SpotId
         }
 
         console.log(query)

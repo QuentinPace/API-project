@@ -4,7 +4,7 @@ const { fn, col } = require('sequelize');
 const { Spot, User, SpotImage, Review, ReviewImage } = require('../../db/models');
 
 
-const { validateSpotCreate, validateSpotEdit, validateReviewCreate } = require('../../utils/validationArrays')
+const { validateSpotCreate, validateSpotEdit, validateReviewCreate, validateQuery } = require('../../utils/validationArrays')
 
 
 const router = express.Router()
@@ -259,9 +259,9 @@ router.delete('/:spotId', async (req, res) => {
 
 
 
-router.get('/', async(req, res) => {
+router.get('/', validateQuery, async(req, res) => {
     try {
-        const spots = await Spot.findAll({
+        const query = {
             attributes: {
                 include: [
                     [fn('AVG', col('Reviews.stars')), 'avgRating']  
@@ -281,7 +281,25 @@ router.get('/', async(req, res) => {
                 }
             ],
             group: ['Spot.id'],  // Group by SpotId
-        });
+        }
+      
+
+        const page = req.query.page ? req.query.page : 1
+        const size = (req.query.size && req.query.size <= 20 ) ? req.query.size : 20
+        console.log(`\npage:${page}\nsize:${size}\n`)
+
+        let limit = size
+        let offset = size * (page - 1)
+
+        const querysArr = Object.keys(req.query)
+
+        //where i will do the filters for the query
+        if(querysArr.length){
+            for(let i = 0; i < querysArr.length; i++){
+                //query.where[querysArr[i]] = req.params
+            }
+        }
+        const spots = await Spot.findAll(query);
         
         const formattedSpots = spots.map(spot => {
             let previewImage = spot.dataValues.SpotImages.length > 0 ? spot.dataValues.SpotImages[0].dataValues.previewImage : null; 
@@ -291,6 +309,7 @@ router.get('/', async(req, res) => {
                 previewImage,  
             };
         });
+
 
         res.statusCode = 200
         return res.json(formattedSpots); 

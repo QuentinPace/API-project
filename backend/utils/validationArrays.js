@@ -195,9 +195,86 @@ const validateSpotCreate = [
     handleValidationErrors
   ];
 
+  const validateQuery = [
+    check('page')
+        .optional()
+        .isInt({min: 1})
+        .withMessage('Page must be greater than or equal to 1'),
+    check('size')
+        .optional()
+        .isInt({min: 1, max: 20})
+        .withMessage('Size must be between 1 and 20'),
+    check('maxLat')
+        .optional()
+        .custom(value => {
+            if(value < -90 || value > 90 || isNaN(Number(value))){
+                return false
+            }else {
+                return true
+            }
+          })
+        .withMessage('Maximum latitude is invalid')
+        .exists({ checkFalsy: true })
+        .withMessage('Maximum latitude is invalid')
+        .notEmpty()
+        .withMessage('Maximum latitude is invalid'),
+    check('minLat')
+        .optional()
+        .custom(value => {
+            if(value < -90 || value > 90 || isNaN(Number(value))){
+                return false
+            }else {
+                return true
+            }
+          })
+        .withMessage('Minimum latitude is invalid')
+        .exists({ checkFalsy: true })
+        .withMessage('Minimum latitude is invalid')
+        .notEmpty()
+        .withMessage('Minimum latitude is invalid'),
+    check('minLng')
+        .optional()
+        .custom(value => {
+            if(value < -180 || value > 180 || isNaN(Number(value))){
+                return false
+            }else {
+                return true
+            }
+          })
+        .withMessage('Minimum longitude is invalid')
+        .exists({ checkFalsy: true })
+        .withMessage('Minimum longitude is invalid')
+        .notEmpty()
+        .withMessage('Minimum longitude is invalid'),
+    check('maxLng')
+        .optional()
+        .custom(value => {
+            if(value < -180 || value > 180 || isNaN(Number(value))){
+                return false
+            }else {
+                return true
+            }
+          })
+          .withMessage('Maximum longitude is invalid')
+          .exists({ checkFalsy: true })
+          .withMessage('Maximum longitude is invalid')
+          .notEmpty()
+          .withMessage('Maximum longitude is invalid'),
+    check('minPrice')
+        .optional()
+        .isInt({min: 0})
+        .withMessage('Minimum price must be greater than or equal to 0'),
+    check('maxPrice')
+        .optional()
+        .isInt({min: 0})
+        .withMessage('Maximum price must be greater than or equal to 0'),
+    handleValidationErrors
+  ]
+
   module.exports = {
     validateSpotCreate,
     validateReviewCreate,
     validateSpotEdit,
-    validateReviewEdit
+    validateReviewEdit,
+    validateQuery
   };

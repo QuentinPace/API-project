@@ -283,7 +283,7 @@ router.get('/', validateQuery, async(req, res) => {
             group: ['Spot.id'],  // Group by SpotId
         }
       
-
+        // getting page and size 
         const page = req.query.page ? req.query.page : 1
         const size = (req.query.size && req.query.size <= 20 ) ? req.query.size : 20
         console.log(`\npage:${page}\nsize:${size}\n`)

@@ -261,6 +261,12 @@ router.delete('/:spotId', async (req, res) => {
 
 router.get('/', validateQuery, async(req, res) => {
     try {
+
+        //getting page and size
+        const page = req.query.page ? req.query.page : 1
+        const size = (req.query.size && req.query.size <= 20 ) ? req.query.size : 20
+        console.log(`\npage:${page}\nsize:${size}\n`)
+
         const query = {
             attributes: {
                 include: [
@@ -280,16 +286,13 @@ router.get('/', validateQuery, async(req, res) => {
                     required :false
                 }
             ],
+            limit: size,
+            offset: size * (page - 1),
             group: ['Spot.id'],  // Group by SpotId
         }
-      
-        // getting page and size 
-        const page = req.query.page ? req.query.page : 1
-        const size = (req.query.size && req.query.size <= 20 ) ? req.query.size : 20
-        console.log(`\npage:${page}\nsize:${size}\n`)
 
-        let limit = size
-        let offset = size * (page - 1)
+        console.log(query)
+      
 
         const querysArr = Object.keys(req.query)
 

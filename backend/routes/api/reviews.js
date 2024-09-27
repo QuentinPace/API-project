@@ -30,6 +30,8 @@ router.get('/current', async (req, res) => {
             },
         })
         //getting the preview image for each spot
+
+        console.log(reviewsOfCurrent)
         reviewsOfCurrent.forEach(review => {
             if(review.dataValues.Spot){
                 const reviewImageUrl = review.dataValues.Spot.dataValues.SpotImages[0].url
